@@ -1,0 +1,1455 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#143323">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem("kk-theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
+  <title>Kheti Kranti | Admin dashboard</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, "Segoe UI", system-ui, sans-serif;
+      color: #203329;
+      background: #f3f6f3;
+      font-synthesis: none;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    header { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 72px; padding: 12px clamp(18px, 4vw, 38px); border-bottom: 1px solid #e3ebe4; background: rgba(255,255,255,.96); color: #203329; box-shadow: 0 5px 20px rgba(19, 54, 34, .07); backdrop-filter: blur(12px); }
+    header strong { display: inline-flex; align-items: center; gap: 10px; color: #143e29; font-size: 1.08rem; letter-spacing: -.02em; }
+    .menu-toggle { display: none; align-items: center; gap: 8px; min-height: 40px; padding: 8px 11px; border-color: #d8e4da; background: #fff; color: #23402e; }
+    .menu-toggle-icon { font-size: 1.1rem; line-height: 1; }
+    .header-logo { display: block; width: 54px; height: 54px; border-radius: 11px; object-fit: contain; background: #fff; }
+    .brand-mark { display: grid; width: 50px; height: 50px; place-items: center; border-radius: 12px; background: linear-gradient(145deg, #0f6b3c, #32a361); color: #fff; font-size: 1.35rem; box-shadow: 0 5px 12px rgba(20, 107, 59, .2); }
+    .header-actions { display: flex; align-items: center; gap: 16px; }
+    header a { color: #176b38; font-weight: 700; text-decoration: none; }
+    header button { border-color: #d8e4da; background: #fff; color: #23402e; }
+    .dashboard-layout { display: grid; grid-template-columns: 245px minmax(0, 1fr); min-height: calc(100vh - 72px); }
+    .admin-sidebar { display: flex; min-width: 0; min-height: calc(100vh - 72px); flex-direction: column; align-self: stretch; padding: 28px 16px 18px; background: linear-gradient(180deg, #073e30, #062f29); color: #e6f3e9; }
+    .sidebar-label { margin: 0 10px 12px; color: #a2cbb0; font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .admin-nav { display: grid; min-width: 0; gap: 6px; position: sticky; top: 20px; }
+    .admin-nav button { display: flex; width: 100%; align-items: center; gap: 11px; min-height: 46px; padding: 10px 12px; border: 1px solid transparent; border-radius: 11px; background: transparent; color: #c5dfcd; text-align: left; font-size: .91rem; font-weight: 700; transition: background .18s, color .18s, transform .18s; }
+    .admin-nav button:hover, .admin-nav button:focus-visible, .admin-nav button[aria-current="page"] { background: #087346; color: #fff; outline: none; }
+    .admin-nav button:hover { transform: translateX(2px); }
+    .nav-dot { width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%; background: #65c58a; }
+    .sidebar-footer { margin: auto 10px 20px; padding-top: 48px; color: #aad2b7; font-size: .82rem; line-height: 1.5; }
+    .sidebar-footer strong { display: block; margin-bottom: 4px; color: #43cf7a; font-size: .96rem; }
+    .workspace-account { margin-top: 0; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.14); }
+    .workspace-account button { color: #ffd4d0; }
+    .workspace-account button:hover { background: #843f34; color: #fff; }
+    .workspace-account .message { min-height: 0; margin: 0 10px 8px; color: #ffd0ca; font-size: .78rem; }
+    main { width: min(1360px, calc(100% - 56px)); min-width: 0; margin: 30px auto 50px; }
+    .intro { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
+    .intro-tools { display: flex; align-items: center; gap: 10px; }
+    .intro-copy { max-width: 680px; }
+    .intro-kicker { margin: 0 0 8px; color: #247448; font-size: .76rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.85rem, 3vw, 2.6rem); letter-spacing: -.045em; }
+    .intro p { margin: 0; }
+    .today-date { flex: 0 0 auto; padding: 10px 14px; border: 1px solid #e0e9e1; border-radius: 12px; background: #fff; color: #52665a; font-size: .84rem; font-weight: 700; }
+    h2 { margin: 0 0 8px; font-size: 1.2rem; }
+    p { color: #627267; line-height: 1.55; }
+    .panel { margin-bottom: 22px; padding: clamp(18px, 2.4vw, 26px); border: 1px solid #e0e8e0; border-radius: 16px; background: #fff; box-shadow: 0 8px 26px rgba(27, 64, 39, .045); }
+    .admin-view[hidden] { display: none; }
+    .view-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin: 2px 0 20px; }
+    .view-heading h1 { margin-bottom: 5px; font-size: clamp(1.6rem, 2.8vw, 2.2rem); }
+    .view-heading p { margin: 0; }
+    .panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+    .category-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    label { display: grid; gap: 7px; color: #344b3b; font-size: .9rem; font-weight: 650; }
+    input { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #cbd8cc; border-radius: 10px; background: #fff; color: #203329; font: inherit; }
+    select { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid #cbd8cc; border-radius: 10px; background: #fff; color: #203329; font: inherit; }
+    input:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #e5a823; outline-offset: 2px; }
+    button { min-height: 42px; padding: 9px 14px; border: 1px solid #d3ded4; border-radius: 10px; background: #fff; color: #23402e; font: inherit; font-weight: 700; cursor: pointer; }
+    button.primary { border-color: #176b38; background: #176b38; color: #fff; }
+    button:hover:not(:disabled) { filter: brightness(.97); }
+    button:disabled { opacity: .6; cursor: wait; }
+    .span-two { grid-column: 1 / -1; }
+    .message { min-height: 1.4em; margin: 12px 0 0; font-size: .92rem; }
+    .message.error { color: #a12822; }
+    .message.success { color: #176b38; }
+    .logo-row { display: grid; grid-template-columns: 220px minmax(0, 1fr); align-items: center; gap: 22px; }
+    #logoPreview { display: block; width: 100%; max-height: 130px; object-fit: contain; border: 1px dashed #d3ded4; border-radius: 12px; padding: 12px; }
+    .legal-document-list { display: grid; gap: 12px; }
+    .legal-document-card { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 14px; border: 1px solid #e2e9e2; border-radius: 12px; background: #fbfcfb; }
+    .legal-document-card h3 { margin: 0 0 4px; font-size: 1rem; }
+    .legal-document-card p { margin: 0; font-size: .86rem; }
+    .legal-document-actions { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+    .legal-document-actions label { min-width: min(100%, 260px); }
+    .legal-document-actions input[type="file"] { min-height: 38px; padding: 5px; font-size: .82rem; }
+    .legal-document-status { padding: 5px 9px; border-radius: 999px; background: #f1ece0; color: #765b21; font-size: .78rem; font-weight: 750; white-space: nowrap; }
+    .legal-document-status.uploaded { background: #e3f3e6; color: #176b38; }
+    .category-list { display: grid; gap: 12px; }
+    .category-card { display: grid; grid-template-columns: 138px minmax(0, 1fr); gap: 18px; padding: 14px; border: 1px solid #e2e9e2; border-radius: 14px; background: #fbfcfb; }
+    .category-card img, .category-photo-empty { width: 138px; height: 112px; border-radius: 10px; background: #eaf0e9; object-fit: cover; }
+    .category-photo-empty { display: grid; place-items: center; padding: 10px; color: #627267; font-size: .85rem; text-align: center; }
+    .category-editor { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; gap: 10px; }
+    .category-actions { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-top: 10px; }
+    .category-actions label { display: flex; align-items: center; gap: 8px; }
+    .category-actions input[type="file"] { width: min(100%, 300px); min-height: 38px; padding: 5px; font-size: .82rem; }
+    .status { padding: 5px 9px; border-radius: 999px; background: #e3f3e6; color: #176b38; font-size: .78rem; font-weight: 750; }
+    .status.inactive { background: #f1ece0; color: #765b21; }
+    button.danger { border-color: #f0c8c4; color: #a12822; }
+    .category-note { margin: 8px 0 0; color: #748278; font-size: .82rem; }
+    .help-faq-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 14px; border: 1px solid #e2e9e2; border-radius: 14px; background: #fbfcfb; }
+    .help-faq-form label { display: grid; gap: 6px; color: #334a3b; font-size: .84rem; font-weight: 700; }
+    .help-faq-form input, .help-faq-form textarea { width: 100%; min-height: 42px; padding: 10px 12px; border: 1px solid #dce7df; border-radius: 9px; }
+    .help-faq-form textarea { min-height: 88px; resize: vertical; }
+    .help-faq-form .span-two { grid-column: 1 / -1; }
+    .help-faq-list { display: grid; gap: 10px; margin-top: 14px; }
+    .help-faq-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; padding: 14px; border: 1px solid #e2e9e2; border-radius: 12px; background: #fff; }
+    .help-faq-item h3 { margin: 0 0 6px; font-size: .96rem; }
+    .help-faq-item p { margin: 4px 0; color: #67776c; font-size: .84rem; line-height: 1.5; white-space: pre-wrap; }
+    .help-faq-actions { display: flex; align-items: flex-start; gap: 8px; }
+    .admin-member-actions { display: flex; align-items: center; gap: 8px; }
+    .welcome-panel { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 22px; overflow: hidden; margin-bottom: 18px; padding: clamp(22px, 3.2vw, 34px); border-radius: 20px; background: radial-gradient(circle at 88% 10%, rgba(91, 210, 136, .25), transparent 18rem), linear-gradient(120deg, #0b4931, #117344); color: #fff; box-shadow: 0 16px 34px rgba(16, 89, 52, .17); }
+    .welcome-panel::after { position: absolute; right: 18%; bottom: -90px; width: 210px; height: 210px; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; content: ""; }
+    .welcome-copy { position: relative; z-index: 1; max-width: 650px; }
+    .welcome-kicker { margin: 0 0 9px; color: #9be6b3; font-size: .75rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .welcome-panel h2 { margin: 0 0 8px; color: #fff; font-size: clamp(1.45rem, 2.5vw, 2rem); letter-spacing: -.035em; }
+    .welcome-panel p { margin: 0; color: #d7efe0; }
+    .welcome-actions { position: relative; z-index: 1; display: flex; flex: 0 0 auto; gap: 9px; flex-wrap: wrap; }
+    .welcome-actions button { display: inline-flex; min-height: 40px; align-items: center; justify-content: center; gap: 8px; padding: 8px 13px; border: 1px solid rgba(255,255,255,.32); border-radius: 10px; background: rgba(255,255,255,.1); color: #fff; font-size: .82rem; font-weight: 750; }
+    .welcome-actions button:first-child { border-color: #fff; background: #fff; color: #145638; }
+    .overview-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .overview-card { position: relative; min-height: 104px; padding: 14px 16px; border: 1px solid #e0e8e0; border-radius: 14px; background: #fff; box-shadow: 0 6px 18px rgba(27, 64, 39, .035); }
+    .overview-card::before { position: absolute; top: 13px; right: 13px; width: 30px; height: 30px; border-radius: 10px; background: #eaf6ed; color: #176b38; content: ""; }
+    .overview-icon { position: absolute; top: 19px; right: 23px; z-index: 1; color: #176b38; font-size: .82rem; font-weight: 900; }
+    .overview-card span { display: block; max-width: 78%; color: #718076; font-size: .76rem; font-weight: 700; }
+    .overview-card strong { display: block; margin-top: 8px; color: #173e29; font-size: 1.55rem; line-height: 1; }
+    .overview-card small { display: block; margin-top: 6px; color: #839087; font-size: .7rem; }
+    .quick-panel { margin-bottom: 18px; padding: 15px 17px; border: 1px solid #e0e8e0; border-radius: 14px; background: #fff; }
+    .quick-panel h2 { margin: 0 0 12px; font-size: .96rem; }
+    .quick-links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .quick-links button { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 48px; padding: 10px 13px; border: 1px solid #e5ece6; border-radius: 11px; color: #31513d; text-align: left; font-size: .84rem; }
+    .quick-links button:hover { border-color: #abd1b4; background: #f5fbf6; }
+    .quick-links a span:last-child { color: #218249; font-size: 1.1rem; }
+    .muted { color: #748278; font-size: .83rem; }
+    #adminProductMap { width: 100%; height: clamp(320px, 55vh, 600px); overflow: hidden; border: 1px solid #e0e8e0; border-radius: 12px; background: #f3f6f3; }
+    .map-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .map-message { min-height: 1.4em; margin: 12px 0 0; font-size: .92rem; }
+    .map-info { max-width: 260px; color: #203329; font: 14px/1.5 Inter, "Segoe UI", system-ui, sans-serif; }
+    .map-info strong { display: block; }
+    .admin-member-list { display: grid; gap: 10px; margin-top: 18px; }
+    .admin-member { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid #e2e9e2; border-radius: 12px; background: #fbfcfb; }
+    .user-toolbar { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(160px, .45fr) auto; align-items: end; gap: 12px; }
+    .user-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+    .user-pagination > div { display: flex; gap: 8px; }
+    .user-action { flex: 0 0 auto; }
+    .user-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .user-delete-action { border-color: #a12822; background: #a12822; color: #fff; }
+    .status.blocked { background: #fbe7e5; color: #a12822; }
+    @media (max-width: 1050px) {
+      .dashboard-layout { grid-template-columns: 1fr; }
+      .menu-toggle { display: inline-flex; }
+      .admin-sidebar { display: none; min-height: 0; padding: 16px; border-bottom: 1px solid #e1e9e1; }
+      .dashboard-layout.workspace-open .admin-sidebar { display: flex; }
+      .sidebar-label { margin-bottom: 8px; }
+      .admin-nav { display: grid; width: 100%; position: static; gap: 5px; }
+      .admin-nav button { width: 100%; }
+      main { width: min(calc(100% - 32px), 1360px); margin-top: 22px; }
+      .sidebar-footer { display: none; }
+      .workspace-account { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.14); }
+      .welcome-panel { align-items: flex-start; flex-direction: column; }
+    }
+    @media (max-width: 700px) {
+      .category-form, .logo-row { grid-template-columns: 1fr; }
+      .category-card { grid-template-columns: 1fr; }
+      .category-card img, .category-photo-empty { width: 100%; height: 180px; }
+      .category-editor { grid-template-columns: 1fr; }
+      .category-actions { align-items: flex-start; flex-direction: column; }
+      .legal-document-card { grid-template-columns: 1fr; }
+      .legal-document-actions { align-items: flex-start; flex-direction: column; }
+      .panel-heading { flex-direction: column; }
+      .user-toolbar { grid-template-columns: 1fr; }
+      .user-pagination { align-items: flex-start; flex-direction: column; }
+      .admin-member { align-items: flex-start; flex-direction: column; }
+      .overview-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .quick-links { grid-template-columns: 1fr; }
+      .intro { align-items: flex-start; flex-direction: column; }
+      .intro-tools { width: 100%; justify-content: space-between; }
+      .today-date { display: none; }
+      .header-actions { gap: 9px; }
+      .header-actions a { display: none; }
+    }
+    :root[data-theme="dark"] { color-scheme: dark; color: #e8f0e9; background: #101b15; }
+    :root[data-theme="dark"] header { border-color: #365743; background: rgba(20,51,35,.96); color: #e8f0e9; }
+    :root[data-theme="dark"] header a { color: #8dda9e; }
+    :root[data-theme="dark"] .menu-toggle,
+    :root[data-theme="dark"] header button { border-color: #45614d; background: #1b2c22; color: #e8f0e9; }
+    :root[data-theme="dark"] .dashboard-layout { background: #101b15; }
+    :root[data-theme="dark"] main { color: #e8f0e9; }
+    :root[data-theme="dark"] .today-date,
+    :root[data-theme="dark"] .panel,
+    :root[data-theme="dark"] .category-card,
+    :root[data-theme="dark"] .admin-member,
+    :root[data-theme="dark"] .legal-document-card,
+    :root[data-theme="dark"] .overview-card,
+    :root[data-theme="dark"] .quick-link { border-color: #365743; background: #1b3f2b; color: #e8f0e9; }
+    :root[data-theme="dark"] .today-date,
+    :root[data-theme="dark"] p,
+    :root[data-theme="dark"] .intro-kicker { color: #b1c0b5; }
+    :root[data-theme="dark"] h1,
+    :root[data-theme="dark"] h2,
+    :root[data-theme="dark"] h3 { color: #e8f0e9; }
+    :root[data-theme="dark"] label { color: #d1ddd3; }
+    :root[data-theme="dark"] input,
+    :root[data-theme="dark"] select,
+    :root[data-theme="dark"] textarea { border-color: #45614d; background: #102017; color: #e8f0e9; }
+    :root[data-theme="dark"] button { border-color: #45614d; background: #1b2c22; color: #e8f0e9; }
+    :root[data-theme="dark"] button.primary { border-color: #287a46; background: #287a46; color: #fff; }
+    :root[data-theme="dark"] .legal-document-status { background: #493d20; color: #f0d78e; }
+    :root[data-theme="dark"] .legal-document-status.uploaded { background: #1e5535; color: #a7e4b5; }
+    :root[data-theme="dark"] .category-card img,
+    :root[data-theme="dark"] .category-photo-empty { background: #243a2b; color: #b1c0b5; }
+    :root[data-theme="dark"] .help-faq-form,
+    :root[data-theme="dark"] .help-faq-item { border-color: #365743; background: #1b3f2b; }
+    :root[data-theme="dark"] .help-faq-form label { color: #d1ddd3; }
+    :root[data-theme="dark"] .help-faq-form input,
+    :root[data-theme="dark"] .help-faq-form textarea { border-color: #45614d; background: #102017; color: #e8f0e9; }
+    :root[data-theme="dark"] .help-faq-item p { color: #b1c0b5; }
+    @media (max-width: 700px) {
+      .help-faq-form { grid-template-columns: 1fr; }
+      .help-faq-form .span-two { grid-column: auto; }
+      .help-faq-item { grid-template-columns: 1fr; }
+      .help-faq-actions { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="menu-toggle" id="workspaceMenuToggle" type="button" aria-controls="adminSidebar" aria-expanded="false" aria-label="Open workspace menu">
+      <span class="menu-toggle-icon" aria-hidden="true">☰</span><span id="activeWorkspaceLabel">Overview</span>
+    </button>
+    <strong>Kheti Kranti <span class="muted">/ Admin</span></strong>
+    <div class="header-actions">
+      <a id="storefrontLink" href="/index.html?lang=en">Back to website</a>
+    </div>
+  </header>
+  <div class="dashboard-layout" id="dashboardLayout">
+    <aside class="admin-sidebar" id="adminSidebar" aria-label="Admin navigation">
+      <p class="sidebar-label">Workspace</p>
+      <nav class="admin-nav">
+        <button type="button" data-view="overview" aria-current="page"><span class="nav-dot"></span>Overview</button>
+        <button type="button" data-view="paymentGateway"><span class="nav-dot"></span>Payment gateway</button>
+        <button type="button" data-view="adminUsers"><span class="nav-dot"></span>Users</button>
+        <button type="button" data-view="adminMembers"><span class="nav-dot"></span>Administrators</button>
+        <button type="button" data-view="helpFaq"><span class="nav-dot"></span>Help chatbot</button>
+        <button type="button" data-view="productLocations"><span class="nav-dot"></span>Product locations</button>
+        <button type="button" data-view="brandLogo"><span class="nav-dot"></span>Brand logo</button>
+        <button type="button" data-view="legalDocuments"><span class="nav-dot"></span>Legal PDFs</button>
+        <button type="button" data-view="addCategory"><span class="nav-dot"></span>Add category</button>
+        <button type="button" data-view="manageCategories"><span class="nav-dot"></span>Manage categories</button>
+      </nav>
+      <div class="sidebar-footer"><strong>Manage with confidence</strong>Admin changes are saved securely to the marketplace.</div>
+      <nav class="admin-nav workspace-account" aria-label="Workspace account">
+        <p class="message" id="logoutMessage" role="alert" aria-live="assertive"></p>
+        <button id="adminLogout" type="button"><span class="nav-dot"></span>Sign out</button>
+      </nav>
+    </aside>
+    <main>
+      <section class="admin-view" id="overviewPanel" data-view-panel="overview">
+      <div class="intro">
+        <div class="intro-copy">
+          <p class="intro-kicker">Kheti Kranti · Admin workspace</p>
+          <h1>Admin control center</h1>
+          <p>Manage marketplace users, branding, product categories and administrator access from one place.</p>
+        </div>
+        <div class="intro-tools">
+          <div class="today-date" id="todayDate"></div>
+          <button type="button" id="refreshOverview">Refresh overview</button>
+        </div>
+      </div>
+      <section class="welcome-panel" aria-label="Admin welcome">
+        <div class="welcome-copy">
+          <p class="welcome-kicker">Your marketplace, at a glance</p>
+          <h2>Welcome to your admin workspace</h2>
+          <p>Keep your storefront organized, your team up to date, and product locations in view.</p>
+        </div>
+        <div class="welcome-actions">
+          <button type="button" data-open-view="addCategory">Add a category <span aria-hidden="true">+</span></button>
+          <button type="button" data-open-view="productLocations">View product map <span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+      <div class="overview-grid" aria-label="Admin overview">
+        <div class="overview-card"><span>Registered users</span><i class="overview-icon" aria-hidden="true">U</i><strong id="userCount">—</strong><small id="userCountDetail">Loading account count…</small></div>
+        <div class="overview-card"><span>Administrator accounts</span><i class="overview-icon" aria-hidden="true">A</i><strong id="adminCount">—</strong><small id="adminCountDetail">Loading team status…</small></div>
+        <div class="overview-card"><span>Active categories</span><i class="overview-icon" aria-hidden="true">C</i><strong id="categoryCount">—</strong><small id="categoryCountDetail">Loading category status…</small></div>
+        <div class="overview-card"><span>Product locations</span><i class="overview-icon" aria-hidden="true">L</i><strong id="productLocationCount">—</strong><small id="productLocationDetail">Loading saved coordinates…</small></div>
+        <div class="overview-card"><span>Need map coordinates</span><i class="overview-icon" aria-hidden="true">!</i><strong id="missingLocationCount">—</strong><small id="missingLocationDetail">Listings without saved locations</small></div>
+      </div>
+      <section class="quick-panel" aria-labelledby="quickActionsHeading">
+        <h2 id="quickActionsHeading">Quick actions</h2>
+        <div class="quick-links">
+          <button type="button" data-open-view="adminUsers"><span>Manage marketplace users</span><span aria-hidden="true">→</span></button>
+          <button type="button" data-open-view="adminMembers"><span>Invite an administrator</span><span aria-hidden="true">→</span></button>
+          <button type="button" data-open-view="brandLogo"><span>Update storefront logo</span><span aria-hidden="true">→</span></button>
+          <button type="button" data-open-view="manageCategories"><span>Review categories</span><span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+      <p class="admin-security-note">Administrator access only. Website changes are saved to the server.</p>
+      <p class="message" id="overviewMessage" role="status" aria-live="polite"></p>
+      </section>
+
+    <section class="panel admin-view" id="adminMembers" data-view-panel="adminMembers" aria-labelledby="adminMembersHeading" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="adminMembersHeading">Administrator members</h2>
+          <p>Invite a new administrator by email. They must verify the address and create their own password before signing in.</p>
+        </div>
+        <button id="refreshAdminMembers" type="button">Refresh members</button>
+      </div>
+      <form id="adminInviteForm" class="category-form" hidden>
+        <label for="adminInviteName">Full name<input id="adminInviteName" name="name" maxlength="100" autocomplete="name" required></label>
+        <label for="adminInviteEmail">Email address<input id="adminInviteEmail" name="email" type="email" maxlength="190" autocomplete="email" required></label>
+        <div><button class="primary" id="inviteAdminButton" type="submit">Send admin invitation</button></div>
+      </form>
+      <p class="message" id="adminInviteMessage" role="status" aria-live="polite"></p>
+      <div id="adminMemberList" class="admin-member-list" aria-live="polite">Loading administrators…</div>
+    </section>
+
+    <section class="panel admin-view" id="helpFaq" data-view-panel="helpFaq" aria-labelledby="helpFaqHeading" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="helpFaqHeading">Kheti Kranti Help chatbot</h2>
+          <p>Add, edit, or remove the bilingual questions and answers shown in the public help chatbot. Saved changes appear to visitors within seconds.</p>
+        </div>
+        <button id="refreshHelpFaq" type="button">Refresh questions</button>
+      </div>
+      <form id="helpFaqForm" class="help-faq-form">
+        <label>Question in English<input name="questionEn" maxlength="180" required></label>
+        <label>Question in Hindi<input name="questionHi" maxlength="180" required></label>
+        <label>Answer in English<textarea name="answerEn" maxlength="1200" required></textarea></label>
+        <label>Answer in Hindi<textarea name="answerHi" maxlength="1200" required></textarea></label>
+        <label class="span-two">Search keywords in English/Hindi (comma-separated)<input name="keywords" maxlength="500" placeholder="e.g. payment, भुगतान, refund"></label>
+        <div class="span-two"><button class="primary" id="addHelpFaq" type="submit">Add question and answer</button></div>
+      </form>
+      <p class="message" id="helpFaqMessage" role="status" aria-live="polite"></p>
+      <div id="helpFaqList" class="help-faq-list" aria-live="polite">Loading chatbot questions…</div>
+    </section>
+
+    <section class="panel admin-view" id="paymentGateway" data-view-panel="paymentGateway" aria-labelledby="paymentGatewayHeading" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="paymentGatewayHeading">Payment gateway</h2>
+          <p>Save Razorpay credentials here to enable checkout. Test keys keep payments in demo mode; live keys enable real customer payments.</p>
+        </div>
+        <button id="refreshPaymentGateway" type="button">Refresh status</button>
+      </div>
+      <div class="panel">
+        <strong id="paymentGatewayStatus" role="status" aria-live="polite">Loading payment status…</strong>
+        <p id="paymentGatewayDetails">Credentials are never shown after saving.</p>
+      </div>
+      <form id="paymentGatewayForm" class="category-form">
+        <label for="paymentGatewayKeyId">Razorpay Key ID
+          <input id="paymentGatewayKeyId" name="keyId" autocomplete="off" maxlength="100" placeholder="rzp_test_… or rzp_live_…" required>
+        </label>
+        <label for="paymentGatewayKeySecret">Razorpay Key Secret
+          <input id="paymentGatewayKeySecret" name="keySecret" type="password" autocomplete="new-password" maxlength="256" required>
+        </label>
+        <p class="span-two">The key prefix selects test or live mode. Use a matching Key ID and Secret from the same Razorpay account. Live mode can charge real money. Saving new keys will not reveal or return the saved secret.</p>
+        <div><button class="primary" id="savePaymentGateway" type="submit">Save and enable payments</button></div>
+        <div><button id="disablePaymentGateway" type="button" class="danger" hidden>Disable payments</button></div>
+      </form>
+      <p class="message" id="paymentGatewayMessage" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="panel admin-view" id="adminUsers" data-view-panel="adminUsers" aria-labelledby="adminUsersHeading" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="adminUsersHeading">Marketplace users</h2>
+          <p>Search accounts, block or unblock access, or permanently delete a marketplace account and its listings, reviews and orders. Other customers’ order history is protected.</p>
+        </div>
+        <button id="refreshAdminUsers" type="button">Refresh users</button>
+      </div>
+      <form id="adminUserSearchForm" class="user-toolbar">
+        <label for="adminUserSearch">Search by name or email<input id="adminUserSearch" type="search" maxlength="100" autocomplete="off" placeholder="Enter a name or email"></label>
+        <label for="adminUserStatus">Account status
+          <select id="adminUserStatus">
+            <option value="all">All users</option>
+            <option value="active">Active</option>
+            <option value="blocked">Blocked</option>
+          </select>
+        </label>
+        <button class="primary" type="submit">Search</button>
+      </form>
+      <p class="message" id="adminUserMessage" role="status" aria-live="polite"></p>
+      <div id="adminUserList" class="admin-member-list" aria-live="polite">Loading users…</div>
+      <div class="user-pagination">
+        <span id="adminUserPageInfo" class="muted" aria-live="polite"></span>
+        <div>
+          <button id="adminUserPrevious" type="button" disabled>Previous</button>
+          <button id="adminUserNext" type="button" disabled>Next</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel admin-view" id="productLocations" data-view-panel="productLocations" aria-labelledby="productMapHeading" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="productMapHeading">Product listing locations</h2>
+          <p>See where active and inactive products are listed. Only administrators can access these locations.</p>
+        </div>
+        <button id="refreshProductMap" type="button">Refresh map</button>
+      </div>
+      <div id="adminProductMap" role="application" aria-label="Map of product listing locations"></div>
+      <p class="map-message" id="productMapMessage" role="status" aria-live="polite">Loading product locations…</p>
+    </section>
+
+    <section class="panel admin-view" id="brandLogo" data-view-panel="brandLogo" aria-labelledby="logoHeading" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="logoHeading">Brand logo</h2>
+          <p>Upload a PNG image (maximum 5 MB). The new logo appears on the sign-in page, account area and public storefront.</p>
+        </div>
+      </div>
+      <div class="logo-row">
+        <img id="logoPreview" alt="Current Kheti Kranti logo" hidden>
+        <form id="logoForm">
+          <label for="logoFile">Select PNG logo<input id="logoFile" type="file" accept="image/png" required></label>
+          <button class="primary" id="uploadButton" type="submit">Upload logo</button>
+          <p class="message" id="logoMessage" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="panel admin-view" id="legalDocuments" data-view-panel="legalDocuments" aria-labelledby="legalDocumentsHeading" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="legalDocumentsHeading">Website legal PDFs</h2>
+          <p>Upload or replace the Privacy Policy, Terms and Sitemap PDFs (maximum 5 MB each). Deleting an uploaded PDF restores the existing website page.</p>
+        </div>
+        <button id="refreshLegalDocuments" type="button">Refresh</button>
+      </div>
+      <div id="legalDocumentList" class="legal-document-list" aria-live="polite">Loading legal documents…</div>
+      <p class="message" id="legalDocumentMessage" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="panel admin-view" id="addCategory" data-view-panel="addCategory" aria-labelledby="categoryHeading" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="categoryHeading">Add a category</h2>
+          <p>New categories immediately become available for product listings. Add a photo after creating the category.</p>
+        </div>
+      </div>
+      <form id="categoryForm" class="category-form">
+        <label>English name<input name="nameEn" maxlength="80" required></label>
+        <label>Hindi name<input name="nameHi" maxlength="80" required></label>
+        <label>Display order<input name="sortOrder" type="number" min="0" max="100000" value="" placeholder="Set automatically" required></label>
+        <div><button class="primary" type="submit">Create category</button></div>
+      </form>
+      <p class="message" id="categoryMessage" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="panel admin-view" id="manageCategories" data-view-panel="manageCategories" aria-labelledby="manageHeading" hidden>
+      <div class="panel-heading">
+        <div>
+          <h2 id="manageHeading">Manage categories</h2>
+          <p>Update names, display order, and photos, or hide a category without removing existing product records.</p>
+        </div>
+        <button id="refreshCategories" type="button">Refresh</button>
+      </div>
+      <p class="category-note">Hide keeps existing product and order records. Permanent deletion is available only when no products use the category. Changing a URL key also updates its product listings.</p>
+      <div id="categoryList" class="category-list" aria-live="polite">Loading categories…</div>
+      <p class="message" id="listMessage" role="status" aria-live="polite"></p>
+    </section>
+    </main>
+  </div>
+  <script>
+    const byId = id => document.getElementById(id);
+    const storefrontLanguage = new URLSearchParams(window.location.search).get("lang");
+    byId("storefrontLink").href = `/index.html?lang=${storefrontLanguage === "hi" ? "hi" : "en"}`;
+    const setMessage = (element, text, kind = "") => {
+      element.textContent = text;
+      element.className = `message ${kind}`;
+    };
+    async function api(url, options = {}) {
+      if (window.location.protocol === "file:") {
+        throw new Error("Open the admin panel from your website address (for example, http://localhost:5000/admin.html) after admin sign-in. Opening admin.html directly from a computer file disconnects it from the backend.");
+      }
+      const response = await fetch(url, {
+        credentials: "same-origin",
+        ...options,
+        headers: {
+          ...(options.body && !(options.body instanceof File) ? { "Content-Type": "application/json" } : {}),
+          ...(options.headers || {})
+        }
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Your admin sign-in has expired. Sign in again to reconnect the admin panel.");
+        }
+        if (response.status === 403 && (!result.message ||
+            result.message === "Your account does not have permission to perform this action.")) {
+          throw new Error("This signed-in account does not have admin permission. Sign in with an administrator account to use the admin panel.");
+        }
+        if (response.status === 404 && url === "/api/admin/overview") {
+          throw new Error("The running server does not have the admin overview API yet. Restart the updated website server, then reload this page.");
+        }
+        throw new Error(result.message || `Request failed (${response.status}).`);
+      }
+      return result;
+    }
+    const imageUrl = value => {
+      if (value.startsWith("/")) return value;
+      try {
+        const url = new URL(value);
+        return url.protocol === "https:" ? url.href : "";
+      } catch {
+        return "";
+      }
+    };
+    const categoryList = byId("categoryList");
+    byId("todayDate").textContent = new Intl.DateTimeFormat(undefined, {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }).format(new Date());
+    function showView(name) {
+      const panels = [...document.querySelectorAll("[data-view-panel]")];
+      const navigationButtons = [...document.querySelectorAll(".admin-nav [data-view]")];
+      if (!panels.some(panel => panel.dataset.viewPanel === name)) return;
+      for (const panel of panels) panel.hidden = panel.dataset.viewPanel !== name;
+      for (const button of navigationButtons) {
+        if (button.dataset.view === name) {
+          button.setAttribute("aria-current", "page");
+          byId("activeWorkspaceLabel").textContent = button.textContent.trim();
+        } else {
+          button.removeAttribute("aria-current");
+        }
+      }
+      if (window.matchMedia("(max-width: 1050px)").matches) {
+        byId("dashboardLayout").classList.remove("workspace-open");
+        byId("workspaceMenuToggle").setAttribute("aria-expanded", "false");
+        byId("workspaceMenuToggle").setAttribute("aria-label", "Open workspace menu");
+      }
+      if (name === "overview") loadDashboardOverview();
+      if (name === "paymentGateway") loadPaymentGateway();
+      if (name === "adminUsers") loadAdminUsers();
+      if (name === "adminMembers") loadAdminMembers();
+      if (name === "helpFaq") loadHelpFaqAdmin();
+      if (name === "addCategory") updateNextCategoryOrder().catch(error =>
+        setMessage(byId("categoryMessage"), error.message, "error"));
+      if (name === "manageCategories") loadCategories();
+      if (name === "productLocations") loadProductMap();
+      if (name === "legalDocuments") loadLegalDocuments();
+    }
+    document.querySelectorAll(".admin-nav [data-view]").forEach(button => {
+      button.addEventListener("click", () => showView(button.dataset.view));
+    });
+    byId("workspaceMenuToggle").addEventListener("click", event => {
+      const isOpen = byId("dashboardLayout").classList.toggle("workspace-open");
+      event.currentTarget.setAttribute("aria-expanded", String(isOpen));
+      event.currentTarget.setAttribute("aria-label", isOpen ? "Close workspace menu" : "Open workspace menu");
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key !== "Escape" || !byId("dashboardLayout").classList.contains("workspace-open")) return;
+      byId("dashboardLayout").classList.remove("workspace-open");
+      byId("workspaceMenuToggle").setAttribute("aria-expanded", "false");
+      byId("workspaceMenuToggle").setAttribute("aria-label", "Open workspace menu");
+      byId("workspaceMenuToggle").focus();
+    });
+    document.querySelectorAll("[data-open-view]").forEach(button => {
+      button.addEventListener("click", () => showView(button.dataset.openView));
+    });
+    async function loadDashboardOverview() {
+      const button = byId("refreshOverview");
+      button.disabled = true;
+      setMessage(byId("overviewMessage"), "Refreshing administrator overview…");
+      try {
+        const result = await api("/api/admin/overview");
+        const overview = result.overview;
+        byId("userCount").textContent = overview.userCount;
+        byId("userCountDetail").textContent =
+          `${overview.verifiedUserCount} email-verified marketplace account(s)`;
+        byId("adminCount").textContent = overview.adminCount;
+        byId("adminCountDetail").textContent = "Administrator accounts";
+        byId("categoryCount").textContent = overview.activeCategoryCount;
+        byId("categoryCountDetail").textContent =
+          `${overview.totalCategoryCount} total · ${overview.totalCategoryCount - overview.activeCategoryCount} hidden`;
+        byId("productLocationCount").textContent = overview.mappedProductCount;
+        byId("productLocationDetail").textContent = "Saved listing coordinates";
+        byId("missingLocationCount").textContent = overview.missingLocationCount;
+        byId("missingLocationDetail").textContent = "Non-deleted listings without coordinates";
+        setMessage(byId("overviewMessage"), "");
+      } catch (error) {
+        setMessage(byId("overviewMessage"), error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    }
+    byId("refreshOverview").addEventListener("click", loadDashboardOverview);
+    async function loadPaymentGateway(preserveMessage = false) {
+      const button = byId("refreshPaymentGateway");
+      button.disabled = true;
+      if (!preserveMessage) setMessage(byId("paymentGatewayMessage"), "");
+      byId("paymentGatewayStatus").textContent = "Loading payment status…";
+      try {
+        const result = await api("/api/admin/payment-gateway");
+        const gateway = result.gateway;
+        byId("paymentGatewayStatus").textContent = gateway.enabled
+          ? `Razorpay enabled · ${gateway.mode.toUpperCase()} mode`
+          : "Razorpay payments are disabled";
+        byId("paymentGatewayDetails").textContent = gateway.enabled
+          ? `${gateway.source === "server" ? "Using server-configured credentials." : "Using securely saved admin credentials."} The Key Secret is stored encrypted and cannot be viewed here.${gateway.keyId ? ` Key ID: ${gateway.keyId.slice(0, 8)}…` : ""}`
+          : !gateway.encryptionReady
+            ? "Set a stable, random SESSION_SECRET with at least 32 characters on the server before enabling payments."
+            : "Save a valid Razorpay Key ID and matching Key Secret to enable checkout.";
+        byId("disablePaymentGateway").hidden = !gateway.enabled;
+        byId("paymentGatewayKeyId").value = "";
+        byId("paymentGatewayKeyId").placeholder = gateway.enabled
+          ? `Replace saved key (${gateway.mode} mode)`
+          : "rzp_test_… or rzp_live_…";
+        byId("paymentGatewayKeySecret").value = "";
+      } catch (error) {
+        byId("paymentGatewayStatus").textContent = "Payment status could not be loaded.";
+        setMessage(byId("paymentGatewayMessage"), error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    }
+    byId("refreshPaymentGateway").addEventListener("click", loadPaymentGateway);
+    byId("paymentGatewayForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = Object.fromEntries(new FormData(form));
+      const mode = data.keyId.startsWith("rzp_live_") ? "live" : "test";
+      if (mode === "live" && !window.confirm(
+        "Live Razorpay keys enable real customer payments. Confirm that these are your live keys and that your Razorpay account is ready to accept payments."
+      )) return;
+      const button = byId("savePaymentGateway");
+      button.disabled = true;
+      setMessage(byId("paymentGatewayMessage"), "Saving payment credentials securely…");
+      try {
+        const result = await api("/api/admin/payment-gateway", {
+          method: "PUT",
+          body: JSON.stringify({
+            keyId: data.keyId,
+            keySecret: data.keySecret,
+            confirmLive: mode === "live"
+          })
+        });
+        form.reset();
+        setMessage(byId("paymentGatewayMessage"), result.message, "success");
+        await loadPaymentGateway(true);
+      } catch (error) {
+        setMessage(byId("paymentGatewayMessage"), error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("disablePaymentGateway").addEventListener("click", async event => {
+      if (!window.confirm("Disable online checkout? Existing payment attempts will still be verified using their saved checkout credentials.")) {
+        return;
+      }
+      const button = event.currentTarget;
+      button.disabled = true;
+      setMessage(byId("paymentGatewayMessage"), "Disabling online payments…");
+      try {
+        const result = await api("/api/admin/payment-gateway", {
+          method: "PUT",
+          body: JSON.stringify({ enabled: false })
+        });
+        setMessage(byId("paymentGatewayMessage"), result.message, "success");
+        await loadPaymentGateway(true);
+      } catch (error) {
+        setMessage(byId("paymentGatewayMessage"), error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
+    async function loadAdminMembers() {
+      const memberList = byId("adminMemberList");
+      memberList.textContent = "Loading administrators…";
+      try {
+        const result = await api("/api/admin/members");
+        byId("adminCount").textContent = result.members.length;
+        byId("adminInviteForm").hidden = !result.currentAdminIsPrimary;
+        if (!result.currentAdminIsPrimary) {
+          setMessage(byId("adminInviteMessage"), "Only the primary administrator can invite, block, or delete administrators.", "info");
+        } else {
+          setMessage(byId("adminInviteMessage"), "");
+        }
+        const pendingInvites = result.members.filter(member => !member.emailVerified).length;
+        byId("adminCountDetail").textContent = pendingInvites
+          ? `${pendingInvites} invitation(s) awaiting verification`
+          : "All administrator emails verified";
+        memberList.innerHTML = result.members.map(member => `
+          <div class="admin-member">
+            <div><strong>${escapeHtml(member.name)}</strong><div class="muted">${escapeHtml(member.email)}</div></div>
+            <span class="status ${member.blocked || !member.emailVerified ? "inactive" : ""}">${member.isPrimaryAdmin ? "Primary administrator" : member.blocked ? "Blocked" : member.emailVerified ? "Email verified · OTP sign-in" : "Invitation pending"}</span>
+            ${result.currentAdminIsPrimary && !member.isPrimaryAdmin && member.id !== result.currentAdminId
+              ? `<div class="admin-member-actions">
+                  <button type="button" data-admin-status="${member.blocked ? "false" : "true"}" data-admin-id="${member.id}">${member.blocked ? "Unblock" : "Block"}</button>
+                  <button type="button" class="danger" data-delete-admin="${member.id}">Delete</button>
+                </div>`
+              : ""}
+          </div>`).join("") || "<p>No administrator accounts found.</p>";
+      } catch (error) {
+        memberList.textContent = "Administrators could not be loaded.";
+        byId("adminCountDetail").textContent = "Could not load administrator status";
+        setMessage(byId("adminInviteMessage"), error.message, "error");
+      }
+    }
+    const helpFaqList = byId("helpFaqList");
+    let helpFaqItems = [];
+    function renderHelpFaq() {
+      helpFaqList.innerHTML = helpFaqItems.map((item, index) => `
+        <article class="help-faq-item">
+          <div>
+            <h3>${index + 1}. ${escapeHtml(item.questionEn)}</h3>
+            <p>${escapeHtml(item.questionHi)}</p>
+            <p><strong>Answer:</strong> ${escapeHtml(item.answerEn)}</p>
+            <p><strong>उत्तर:</strong> ${escapeHtml(item.answerHi)}</p>
+            ${item.keywords.length ? `<p><strong>Keywords:</strong> ${escapeHtml(item.keywords.join(", "))}</p>` : ""}
+            <details>
+              <summary>Edit question or answer</summary>
+              <form class="help-faq-form" data-edit-help-faq="${escapeHtml(item.id)}">
+                <label>Question in English<input name="questionEn" value="${escapeHtml(item.questionEn)}" maxlength="180" required></label>
+                <label>Question in Hindi<input name="questionHi" value="${escapeHtml(item.questionHi)}" maxlength="180" required></label>
+                <label>Answer in English<textarea name="answerEn" maxlength="1200" required>${escapeHtml(item.answerEn)}</textarea></label>
+                <label>Answer in Hindi<textarea name="answerHi" maxlength="1200" required>${escapeHtml(item.answerHi)}</textarea></label>
+                <label class="span-two">Search keywords<input name="keywords" value="${escapeHtml(item.keywords.join(", "))}" maxlength="500"></label>
+                <div class="span-two"><button class="primary" type="submit">Save changes</button></div>
+              </form>
+            </details>
+          </div>
+          <div class="help-faq-actions"><button type="button" class="danger" data-delete-help-faq="${escapeHtml(item.id)}">Delete</button></div>
+        </article>`).join("") || "<p>No chatbot questions yet. Add one above.</p>";
+    }
+    async function loadHelpFaqAdmin() {
+      helpFaqList.textContent = "Loading chatbot questions…";
+      try {
+        const result = await api("/api/admin/help/faq");
+        helpFaqItems = result.items;
+        renderHelpFaq();
+        setMessage(byId("helpFaqMessage"), result.updatedAt
+          ? `Showing ${helpFaqItems.length} saved question(s). Last updated ${new Date(result.updatedAt).toLocaleString()}.`
+          : `Showing ${helpFaqItems.length} saved question(s).`);
+      } catch (error) {
+        helpFaqList.textContent = "Chatbot questions could not be loaded.";
+        setMessage(byId("helpFaqMessage"), error.message, "error");
+      }
+    }
+    async function saveHelpFaq(nextItems, successMessage) {
+      const buttons = [...document.querySelectorAll("#helpFaq button, #helpFaqList button")];
+      buttons.forEach(button => { button.disabled = true; });
+      try {
+        const result = await api("/api/admin/help/faq", {
+          method: "PUT",
+          body: JSON.stringify({ items: nextItems })
+        });
+        helpFaqItems = result.items;
+        renderHelpFaq();
+        setMessage(byId("helpFaqMessage"), successMessage || result.message, "success");
+      } catch (error) {
+        setMessage(byId("helpFaqMessage"), error.message, "error");
+        throw error;
+      } finally {
+        buttons.forEach(button => { button.disabled = false; });
+      }
+    }
+    byId("refreshHelpFaq").addEventListener("click", loadHelpFaqAdmin);
+    byId("helpFaqForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = Object.fromEntries(new FormData(form));
+      const item = {
+        id: `faq-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+        questionEn: data.questionEn.trim(),
+        questionHi: data.questionHi.trim(),
+        answerEn: data.answerEn.trim(),
+        answerHi: data.answerHi.trim(),
+        keywords: data.keywords.split(",").map(keyword => keyword.trim()).filter(Boolean)
+      };
+      try {
+        await saveHelpFaq([...helpFaqItems, item], "Question and answer added. The chatbot will refresh shortly.");
+        form.reset();
+      } catch (error) {
+        console.error("Could not add chatbot question:", error);
+      }
+    });
+    helpFaqList.addEventListener("submit", async event => {
+      const form = event.target.closest("[data-edit-help-faq]");
+      if (!form) return;
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form));
+      const nextItems = helpFaqItems.map(item => item.id === form.dataset.editHelpFaq
+        ? {
+            ...item,
+            questionEn: data.questionEn.trim(),
+            questionHi: data.questionHi.trim(),
+            answerEn: data.answerEn.trim(),
+            answerHi: data.answerHi.trim(),
+            keywords: data.keywords.split(",").map(keyword => keyword.trim()).filter(Boolean)
+          }
+        : item);
+      try {
+        await saveHelpFaq(nextItems, "Question and answer updated. The chatbot will refresh shortly.");
+      } catch (error) {
+        console.error("Could not update chatbot question:", error);
+      }
+    });
+    helpFaqList.addEventListener("click", async event => {
+      const button = event.target.closest("[data-delete-help-faq]");
+      if (!button) return;
+      const item = helpFaqItems.find(entry => entry.id === button.dataset.deleteHelpFaq);
+      if (!item || !window.confirm(`Delete “${item.questionEn}” from the help chatbot?`)) return;
+      try {
+        await saveHelpFaq(helpFaqItems.filter(entry => entry.id !== item.id),
+          "Question and answer deleted. The chatbot will refresh shortly.");
+      } catch (error) {
+        console.error("Could not delete chatbot question:", error);
+      }
+    });
+    byId("adminMemberList").addEventListener("click", async event => {
+      const statusButton = event.target.closest("[data-admin-status]");
+      const deleteButton = event.target.closest("[data-delete-admin]");
+      if (!statusButton && !deleteButton) return;
+      const memberId = statusButton ? statusButton.dataset.adminId : deleteButton.dataset.deleteAdmin;
+      const member = Number(memberId);
+      const actionButton = statusButton || deleteButton;
+      actionButton.disabled = true;
+      try {
+        if (statusButton) {
+          const blocked = statusButton.dataset.adminStatus === "true";
+          await api(`/api/admin/members/${member}/status`, {
+            method: "PUT",
+            body: JSON.stringify({ blocked })
+          });
+          setMessage(byId("adminInviteMessage"), blocked
+            ? "Administrator blocked and signed out."
+            : "Administrator unblocked. They can sign in with email OTP.", "success");
+        } else {
+          const account = actionButton.closest(".admin-member");
+          const address = account.querySelector(".muted").textContent;
+          if (!window.confirm(`Permanently delete the administrator account ${address}? This cannot be undone.`)) {
+            actionButton.disabled = false;
+            return;
+          }
+          const result = await api(`/api/admin/members/${member}`, { method: "DELETE" });
+          setMessage(byId("adminInviteMessage"), result.message, "success");
+        }
+        await loadAdminMembers();
+      } catch (error) {
+        setMessage(byId("adminInviteMessage"), error.message, "error");
+        actionButton.disabled = false;
+      }
+    });
+    byId("refreshAdminMembers").addEventListener("click", loadAdminMembers);
+    let adminUserPage = 1;
+    async function loadAdminUsers(preserveMessage = false) {
+      const userList = byId("adminUserList");
+      byId("refreshAdminUsers").disabled = true;
+      userList.textContent = "Loading users…";
+      if (!preserveMessage) setMessage(byId("adminUserMessage"), "");
+      const query = new URLSearchParams({
+        search: byId("adminUserSearch").value.trim(),
+        status: byId("adminUserStatus").value,
+        page: String(adminUserPage)
+      });
+      try {
+        const result = await api(`/api/admin/users?${query}`);
+        const pagination = result.pagination;
+        adminUserPage = pagination.page;
+        byId("adminUserPageInfo").textContent =
+          `${pagination.total} user(s) · Page ${pagination.page} of ${pagination.totalPages}`;
+        byId("adminUserPrevious").disabled = pagination.page <= 1;
+        byId("adminUserNext").disabled = pagination.page >= pagination.totalPages;
+        userList.innerHTML = result.users.map(user => {
+          const createdAt = new Date(user.createdAt);
+          const joined = Number.isNaN(createdAt.getTime())
+            ? "Date unavailable"
+            : createdAt.toLocaleDateString();
+          const statusLabel = user.blocked ? "Blocked" : "Active";
+          const verifiedLabel = user.emailVerified ? "Email verified" : "Email not verified";
+          const actionLabel = user.blocked ? "Unblock user" : "Block user";
+          const actionClass = user.blocked ? "" : "danger";
+          return `
+            <div class="admin-member">
+              <div>
+                <strong>${escapeHtml(user.name)}</strong>
+                <div class="muted">${escapeHtml(user.email)} · ${escapeHtml(user.role)} · Joined ${escapeHtml(joined)}</div>
+                <div class="category-actions">
+                  <span class="status ${user.blocked ? "blocked" : ""}">${statusLabel}</span>
+                  <span class="status ${user.emailVerified ? "" : "inactive"}">${verifiedLabel}</span>
+                </div>
+              </div>
+              <div class="user-actions">
+                <button class="user-action ${actionClass}" type="button"
+                  data-user-id="${escapeHtml(user.id)}" data-user-blocked="${user.blocked}">
+                  ${actionLabel}
+                </button>
+                <button class="user-delete-action" type="button"
+                  data-user-delete-id="${escapeHtml(user.id)}"
+                  data-user-email="${escapeHtml(user.email)}">
+                  Permanently delete
+                </button>
+              </div>
+            </div>`;
+        }).join("") || "<p>No marketplace users match this search.</p>";
+      } catch (error) {
+        userList.textContent = "Marketplace users could not be loaded.";
+        byId("adminUserPageInfo").textContent = "";
+        byId("adminUserPrevious").disabled = true;
+        byId("adminUserNext").disabled = true;
+        setMessage(byId("adminUserMessage"), error.message, "error");
+      } finally {
+        byId("refreshAdminUsers").disabled = false;
+      }
+    }
+    byId("refreshAdminUsers").addEventListener("click", loadAdminUsers);
+    byId("adminUserSearchForm").addEventListener("submit", event => {
+      event.preventDefault();
+      adminUserPage = 1;
+      loadAdminUsers();
+    });
+    byId("adminUserStatus").addEventListener("change", () => {
+      adminUserPage = 1;
+      loadAdminUsers();
+    });
+    byId("adminUserPrevious").addEventListener("click", () => {
+      if (adminUserPage > 1) {
+        adminUserPage -= 1;
+        loadAdminUsers();
+      }
+    });
+    byId("adminUserNext").addEventListener("click", () => {
+      adminUserPage += 1;
+      loadAdminUsers();
+    });
+    byId("adminUserList").addEventListener("click", async event => {
+      const deleteButton = event.target.closest("button[data-user-delete-id]");
+      if (deleteButton && !deleteButton.disabled) {
+        const email = deleteButton.dataset.userEmail;
+        const typedEmail = window.prompt(
+          `Permanently delete ${email} and this account's marketplace data?\n\nThis cannot be undone. Type the exact email address to continue.`
+        );
+        if (typedEmail === null) return;
+        if (typedEmail.trim().toLowerCase() !== email.trim().toLowerCase()) {
+          setMessage(byId("adminUserMessage"), "The email did not match. Nothing was deleted.", "error");
+          return;
+        }
+        if (!window.confirm(
+          `Final confirmation: permanently delete ${email}?\n\nThe account, its listings, reviews and order history will be erased. Other customers' orders are protected; if they depend on this seller's listings, the account will be blocked instead. No Razorpay refund will be issued.`
+        )) return;
+
+        deleteButton.disabled = true;
+        setMessage(byId("adminUserMessage"), "Blocking the account and preparing permanent deletion…");
+        try {
+          const result = await api(`/api/admin/users/${encodeURIComponent(deleteButton.dataset.userDeleteId)}`, {
+            method: "DELETE",
+            body: JSON.stringify({ confirmationEmail: typedEmail.trim() })
+          });
+          setMessage(byId("adminUserMessage"), result.message, result.warnings.length ? "error" : "success");
+          await loadAdminUsers(true);
+          await loadDashboardOverview();
+        } catch (error) {
+          setMessage(byId("adminUserMessage"), error.message, "error");
+          await loadAdminUsers(true);
+        }
+        return;
+      }
+      const button = event.target.closest("button[data-user-id]");
+      if (!button || button.disabled) return;
+      const currentlyBlocked = button.dataset.userBlocked === "true";
+      const blocked = !currentlyBlocked;
+      if (blocked && !window.confirm("Block this account? It will be signed out and unable to sign in until unblocked.")) {
+        return;
+      }
+      button.disabled = true;
+      setMessage(byId("adminUserMessage"), `${blocked ? "Blocking" : "Unblocking"} user…`);
+      try {
+        const result = await api(`/api/admin/users/${encodeURIComponent(button.dataset.userId)}/status`, {
+          method: "PUT",
+          body: JSON.stringify({ blocked })
+        });
+        setMessage(byId("adminUserMessage"), result.message, "success");
+        await loadAdminUsers();
+      } catch (error) {
+        setMessage(byId("adminUserMessage"), error.message, "error");
+        button.disabled = false;
+      }
+    });
+    byId("adminInviteForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = byId("inviteAdminButton");
+      const message = byId("adminInviteMessage");
+      const data = Object.fromEntries(new FormData(form));
+      button.disabled = true;
+      setMessage(message, "Sending invitation…");
+      try {
+        const result = await api("/api/admin/members/invite", {
+          method: "POST",
+          body: JSON.stringify(data)
+        });
+        form.reset();
+        setMessage(message, result.message, "success");
+        await loadAdminMembers();
+      } catch (error) {
+        setMessage(message, error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("adminLogout").addEventListener("click", async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      try {
+        await api("/api/auth/logout", { method: "POST" });
+        window.location.replace("/login?lang=en");
+      } catch (error) {
+        setMessage(byId("logoutMessage"), error.message, "error");
+        button.disabled = false;
+      }
+    });
+    async function loadCategories() {
+      categoryList.textContent = "Loading categories…";
+      try {
+        const result = await api("/api/admin/categories");
+        const activeCategories = result.categories.filter(category => category.active).length;
+        const hiddenCategories = result.categories.length - activeCategories;
+        byId("categoryCount").textContent = activeCategories;
+        byId("categoryCountDetail").textContent = hiddenCategories
+          ? `${hiddenCategories} hidden · ${result.categories.length} total`
+          : `${result.categories.length} total categories`;
+        categoryList.innerHTML = result.categories.map(category => `
+          <article class="category-card" data-slug="${encodeURIComponent(category.slug)}">
+            ${category.imageUrl
+              ? `<img src="${escapeHtml(imageUrl(category.imageUrl))}" alt="${escapeHtml(category.nameEn)} category photo">`
+              : '<div class="category-photo-empty">No photo uploaded</div>'}
+            <div>
+              <span class="status ${category.active ? "" : "inactive"}">${category.active ? "Active" : "Hidden"}</span>
+              <form class="category-editor" data-edit-category>
+                <label>English name<input name="nameEn" value="${escapeHtml(category.nameEn)}" maxlength="80" required></label>
+                <label>Hindi name<input name="nameHi" value="${escapeHtml(category.nameHi)}" maxlength="80" required></label>
+                <label>Category URL key<input name="slug" value="${escapeHtml(category.slug)}" maxlength="80" pattern="([a-z0-9]+(-[a-z0-9]+)*|Seeds|Fertilizer|Equipment|Crop|Pesticide|Irrigation|Rental|Other)" title="Use lowercase letters, numbers, and single hyphens. Existing built-in keys may stay unchanged." required></label>
+                <label>Display order<input name="sortOrder" type="number" min="0" max="100000" value="${category.sortOrder}" required></label>
+                <button class="primary" type="submit">Save details</button>
+              </form>
+              <div class="category-actions">
+                <label>Category photo<input data-category-image type="file" accept="image/jpeg,image/png,image/webp"></label>
+                <button type="button" data-upload-category-image>Upload photo</button>
+                ${category.active
+                  ? '<button type="button" data-toggle-category="false">Hide category</button>'
+                  : '<button type="button" data-toggle-category="true">Activate category</button>'}
+                <button class="danger" type="button" data-delete-category>Delete permanently</button>
+              </div>
+            </div>
+          </article>`).join("") || "<p>No categories found.</p>";
+        setMessage(byId("listMessage"), "");
+      } catch (error) {
+        categoryList.textContent = "Categories could not be loaded.";
+        byId("categoryCountDetail").textContent = "Could not load category status";
+        setMessage(byId("listMessage"), error.message, "error");
+      }
+    }
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"
+      })[character]);
+    }
+    let productMap;
+    let productMapInfoWindow;
+    let productMapMarkers = [];
+    let mapsPromise;
+    let mapAuthFailed = false;
+    function loadGoogleMaps() {
+      if (window.google?.maps) return Promise.resolve(window.google.maps);
+      if (mapsPromise) return mapsPromise;
+      mapsPromise = api("/api/config/google-maps").then(config => {
+        if (!config.available || typeof config.apiKey !== "string" || !config.apiKey.trim()) {
+          throw new Error("Google Maps API key is not configured.");
+        }
+        window.gm_authFailure = () => {
+          mapAuthFailed = true;
+          byId("productMapMessage").textContent =
+            "Google Maps rejected the key. Check billing, Maps JavaScript API, and referrer restrictions.";
+        };
+        return new Promise((resolve, reject) => {
+          const callbackName = `kkAdminMapsReady${Date.now()}`;
+          const script = document.createElement("script");
+          let timeoutId;
+          window[callbackName] = () => {
+            window.clearTimeout(timeoutId);
+            delete window[callbackName];
+            if (window.google?.maps) resolve(window.google.maps);
+            else reject(new Error("Google Maps could not be loaded."));
+          };
+          script.async = true;
+          script.defer = true;
+          script.referrerPolicy = "strict-origin-when-cross-origin";
+          script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(config.apiKey)}&callback=${callbackName}&loading=async`;
+          script.onerror = () => {
+            window.clearTimeout(timeoutId);
+            delete window[callbackName];
+            script.remove();
+            reject(new Error("Google Maps could not be loaded. Check the key and referrer restrictions."));
+          };
+          timeoutId = window.setTimeout(() => {
+            delete window[callbackName];
+            script.remove();
+            reject(new Error("Timed out while loading Google Maps."));
+          }, 20000);
+          document.head.append(script);
+        });
+      }).catch(error => {
+        mapsPromise = null;
+        throw error;
+      });
+      return mapsPromise;
+    }
+    async function loadProductMap() {
+      const button = byId("refreshProductMap");
+      button.disabled = true;
+      byId("productMapMessage").textContent = "Loading product locations…";
+      try {
+        const result = await api("/api/admin/products/map");
+        byId("productLocationCount").textContent = result.products.length;
+        byId("productLocationDetail").textContent = "Saved listing locations";
+        byId("missingLocationCount").textContent = result.withoutCoordinates;
+        byId("missingLocationDetail").textContent = result.withoutCoordinates
+          ? "Listings without saved locations"
+          : "All listings have saved coordinates";
+        await loadGoogleMaps();
+        if (!productMap) {
+          productMap = new google.maps.Map(byId("adminProductMap"), {
+            center: { lat: 22.5, lng: 78.9 },
+            zoom: 5,
+            mapTypeControl: false,
+            streetViewControl: false,
+            fullscreenControl: true
+          });
+          productMapInfoWindow = new google.maps.InfoWindow();
+        }
+        if (mapAuthFailed) return;
+        for (const marker of productMapMarkers) marker.setMap(null);
+        productMapMarkers = [];
+        const bounds = new google.maps.LatLngBounds();
+        for (const product of result.products) {
+          const position = { lat: product.latitude, lng: product.longitude };
+          const marker = new google.maps.Marker({
+            map: productMap,
+            position,
+            title: product.name
+          });
+          marker.addListener("click", () => {
+            const details = document.createElement("div");
+            details.className = "map-info";
+            const name = document.createElement("strong");
+            name.textContent = product.name;
+            const location = document.createElement("div");
+            location.textContent = product.locationName || "Location not specified";
+            const status = document.createElement("div");
+            status.textContent = `${product.listingType} · ${product.status}`;
+            details.append(name, location, status);
+            productMapInfoWindow.setContent(details);
+            productMapInfoWindow.open({ map: productMap, anchor: marker });
+          });
+          productMapMarkers.push(marker);
+          bounds.extend(position);
+        }
+        if (productMapMarkers.length > 1) productMap.fitBounds(bounds);
+        else if (productMapMarkers.length === 1) {
+          productMap.setCenter({
+            lat: result.products[0].latitude,
+            lng: result.products[0].longitude
+          });
+          productMap.setZoom(10);
+        }
+        const noCoordinates = result.withoutCoordinates
+          ? ` ${result.withoutCoordinates} product(s) have no saved map coordinates.`
+          : "";
+        byId("productMapMessage").textContent =
+          `${productMapMarkers.length} product location(s) shown.${noCoordinates}`;
+      } catch (error) {
+        if (byId("productLocationCount").textContent === "—") {
+          byId("productLocationDetail").textContent = "Could not load product locations";
+          byId("missingLocationDetail").textContent = "Could not load coordinate status";
+        }
+        console.error("Could not load admin product map:", error);
+        byId("productMapMessage").textContent = error.message || "Product locations could not be loaded.";
+      } finally {
+        button.disabled = false;
+      }
+    }
+    byId("refreshProductMap").addEventListener("click", loadProductMap);
+    fetch("/api/config/public", { credentials: "same-origin" })
+      .then(response => {
+        if (!response.ok) throw new Error("Logo settings could not be loaded.");
+        return response.json();
+      })
+      .then(config => {
+        if (config.logoAvailable) {
+          byId("logoPreview").src = `/lobo.png?updated=${Date.now()}`;
+          byId("logoPreview").hidden = false;
+        }
+      })
+      .catch(error => setMessage(byId("logoMessage"), error.message, "error"));
+    byId("logoForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const file = byId("logoFile").files[0];
+      const button = byId("uploadButton");
+      if (!file || file.size === 0 || file.size > 5 * 1024 * 1024) {
+        setMessage(byId("logoMessage"), "Choose a non-empty PNG logo no larger than 5 MB.", "error");
+        return;
+      }
+      button.disabled = true;
+      setMessage(byId("logoMessage"), "Uploading…");
+      try {
+        const signature = new Uint8Array(await file.slice(0, 8).arrayBuffer());
+        const pngSignature = [137, 80, 78, 71, 13, 10, 26, 10];
+        if (!pngSignature.every((byte, index) => signature[index] === byte)) {
+          throw new Error("This file is not a valid PNG image. Select a PNG logo and try again.");
+        }
+        let decodedLogo;
+        try {
+          decodedLogo = await createImageBitmap(file);
+          decodedLogo.close();
+        } catch {
+          throw new Error("The PNG could not be decoded. Try exporting the logo as a new PNG file.");
+        }
+        const result = await api("/api/admin/logo", {
+          method: "POST",
+          headers: { "Content-Type": "application/octet-stream" },
+          body: file
+        });
+        const preview = byId("logoPreview");
+        await new Promise((resolve, reject) => {
+          preview.onload = () => {
+            preview.onload = null;
+            preview.onerror = null;
+            resolve();
+          };
+          preview.onerror = () => {
+            preview.onload = null;
+            preview.onerror = null;
+            reject(new Error("Logo uploaded, but the preview could not be loaded. Refresh the page to verify it."));
+          };
+          preview.src = `/lobo.png?updated=${Date.now()}`;
+          preview.hidden = false;
+        });
+        setMessage(byId("logoMessage"), result.message, "success");
+      } catch (error) {
+        setMessage(byId("logoMessage"), error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
+    async function loadLegalDocuments(preserveMessage = false) {
+      const button = byId("refreshLegalDocuments");
+      const list = byId("legalDocumentList");
+      button.disabled = true;
+      if (!preserveMessage) setMessage(byId("legalDocumentMessage"), "");
+      list.textContent = "Loading legal documents…";
+      try {
+        const result = await api("/api/admin/legal-documents");
+        list.replaceChildren();
+        for (const item of result.documents) {
+          const card = document.createElement("article");
+          card.className = "legal-document-card";
+          const copy = document.createElement("div");
+          const title = document.createElement("h3");
+          title.textContent = item.label;
+          const status = document.createElement("span");
+          status.className = `legal-document-status${item.uploaded ? " uploaded" : ""}`;
+          status.textContent = item.uploaded ? "PDF uploaded" : "Website page active";
+          copy.append(title, status);
+
+          const actions = document.createElement("div");
+          actions.className = "legal-document-actions";
+          const fileLabel = document.createElement("label");
+          fileLabel.textContent = item.uploaded ? "Choose replacement PDF" : "Choose PDF";
+          const fileInput = document.createElement("input");
+          fileInput.type = "file";
+          fileInput.accept = "application/pdf,.pdf";
+          fileInput.setAttribute("aria-label", `${fileLabel.textContent} for ${item.label}`);
+          fileLabel.append(fileInput);
+          const uploadButton = document.createElement("button");
+          uploadButton.className = "primary";
+          uploadButton.type = "button";
+          uploadButton.textContent = item.uploaded ? "Replace PDF" : "Upload PDF";
+          uploadButton.addEventListener("click", () =>
+            uploadLegalDocument(item, fileInput.files[0], uploadButton));
+          actions.append(fileLabel, uploadButton);
+          if (item.uploaded) {
+            const deleteButton = document.createElement("button");
+            deleteButton.className = "danger";
+            deleteButton.type = "button";
+            deleteButton.textContent = "Delete PDF";
+            deleteButton.addEventListener("click", () =>
+              deleteLegalDocument(item, deleteButton));
+            actions.append(deleteButton);
+          }
+          card.append(copy, actions);
+          list.append(card);
+        }
+      } catch (error) {
+        list.textContent = "Legal documents could not be loaded.";
+        setMessage(byId("legalDocumentMessage"), error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    }
+    async function uploadLegalDocument(item, file, button) {
+      if (!file || file.size === 0 || file.size > 5 * 1024 * 1024) {
+        setMessage(byId("legalDocumentMessage"), "Choose a non-empty PDF no larger than 5 MB.", "error");
+        return;
+      }
+      button.disabled = true;
+      setMessage(byId("legalDocumentMessage"), `Uploading ${item.label} PDF…`);
+      try {
+        const signature = new TextDecoder().decode(await file.slice(0, 5).arrayBuffer());
+        if (signature !== "%PDF-") {
+          throw new Error("This file does not have a valid PDF signature.");
+        }
+        const result = await api(`/api/admin/legal-documents/${encodeURIComponent(item.id)}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/pdf" },
+          body: file
+        });
+        setMessage(byId("legalDocumentMessage"), result.message, "success");
+        await loadLegalDocuments(true);
+      } catch (error) {
+        setMessage(byId("legalDocumentMessage"), error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    }
+    async function deleteLegalDocument(item, button) {
+      if (!window.confirm(`Delete the uploaded ${item.label} PDF? The existing website page will be shown again.`)) {
+        return;
+      }
+      button.disabled = true;
+      setMessage(byId("legalDocumentMessage"), `Deleting ${item.label} PDF…`);
+      try {
+        const result = await api(`/api/admin/legal-documents/${encodeURIComponent(item.id)}`, {
+          method: "DELETE"
+        });
+        setMessage(byId("legalDocumentMessage"), result.message, "success");
+        await loadLegalDocuments(true);
+      } catch (error) {
+        setMessage(byId("legalDocumentMessage"), error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    }
+    byId("refreshLegalDocuments").addEventListener("click", loadLegalDocuments);
+    async function updateNextCategoryOrder() {
+      const result = await api("/api/admin/categories");
+      const nextOrder = result.categories.reduce(
+        (maximum, category) => Math.max(maximum, Number(category.sortOrder) || 0),
+        -1
+      ) + 1;
+      byId("categoryForm").elements.sortOrder.value = String(nextOrder);
+    }
+    byId("categoryForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const data = Object.fromEntries(new FormData(form));
+      data.sortOrder = Number(data.sortOrder);
+      const button = form.querySelector("button");
+      button.disabled = true;
+      try {
+        const result = await api("/api/admin/categories", {
+          method: "POST",
+          body: JSON.stringify(data)
+        });
+        form.reset();
+        await updateNextCategoryOrder();
+        setMessage(byId("categoryMessage"), result.message, "success");
+        await loadCategories();
+      } catch (error) {
+        setMessage(byId("categoryMessage"), error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
+    byId("refreshCategories").addEventListener("click", loadCategories);
+    categoryList.addEventListener("submit", async event => {
+      const form = event.target.closest("[data-edit-category]");
+      if (!form) return;
+      event.preventDefault();
+      const card = form.closest("[data-slug]");
+      const button = form.querySelector("button");
+      const data = Object.fromEntries(new FormData(form));
+      data.sortOrder = Number(data.sortOrder);
+      button.disabled = true;
+      try {
+        await api(`/api/admin/categories/${card.dataset.slug}`, {
+          method: "PUT",
+          body: JSON.stringify(data)
+        });
+        setMessage(byId("listMessage"), "Category details saved.", "success");
+        await loadCategories();
+      } catch (error) {
+        setMessage(byId("listMessage"), error.message, "error");
+      } finally {
+        button.disabled = false;
+      }
+    });
+    categoryList.addEventListener("click", async event => {
+      const card = event.target.closest("[data-slug]");
+      if (!card) return;
+      const deleteButton = event.target.closest("[data-delete-category]");
+      const activateButton = event.target.closest("[data-toggle-category]");
+      if (deleteButton) {
+        if (!window.confirm(
+          "Permanently delete this category? It can only be deleted when no products use it. This cannot be undone."
+        )) return;
+        deleteButton.disabled = true;
+        try {
+          const result = await api(`/api/admin/categories/${card.dataset.slug}`, {
+            method: "DELETE"
+          });
+          setMessage(byId("listMessage"), result.message, "success");
+          await loadCategories();
+        } catch (error) {
+          setMessage(byId("listMessage"), error.message, "error");
+        } finally {
+          deleteButton.disabled = false;
+        }
+        return;
+      }
+      if (activateButton) {
+        const active = activateButton.dataset.toggleCategory === "true";
+        try {
+          await api(`/api/admin/categories/${card.dataset.slug}/status`, {
+            method: "PATCH",
+            body: JSON.stringify({ active })
+          });
+          await loadCategories();
+        } catch (error) {
+          setMessage(byId("listMessage"), error.message, "error");
+        }
+      }
+      if (event.target.closest("[data-upload-category-image]")) {
+        const file = card.querySelector("[data-category-image]").files[0];
+        if (!file || file.size > 5 * 1024 * 1024) {
+          setMessage(byId("listMessage"), "Choose a category photo no larger than 5 MB.", "error");
+          return;
+        }
+        const button = event.target.closest("[data-upload-category-image]");
+        button.disabled = true;
+        try {
+          await api(`/api/admin/categories/${card.dataset.slug}/image`, {
+            method: "POST",
+            headers: { "Content-Type": "application/octet-stream" },
+            body: file
+          });
+          setMessage(byId("listMessage"), "Category photo uploaded.", "success");
+          await loadCategories();
+        } catch (error) {
+          setMessage(byId("listMessage"), error.message, "error");
+        } finally {
+          button.disabled = false;
+        }
+      }
+    });
+    showView("overview");
+  </script>
+</body>
+</html>

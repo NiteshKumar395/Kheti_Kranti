@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head><meta charset="utf-8"><title>खेती क्रांति | खेती क्रांति</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("kk-theme")||"dark"}catch(e){}</script></head>
+<body>
+<header>
+<a class="logo" href="hi-index.html"><b aria-hidden="true">K</b><img class="logo-image" alt="" hidden><span>खेती क्रांति</span></a>
+<form class="search" role="search" id="sf" action="hi-index.html"><input id="q" name="q" type="search" placeholder="ट्रैक्टर, थ्रेशर, स्प्रेयर खोजें..." autocomplete="off" aria-label="ट्रैक्टर, थ्रेशर, स्प्रेयर खोजें...">
+<button type="button" class="mic" id="mic" aria-label="Voice search"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg></button>
+<button class="go" aria-label="Search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button></form>
+<div class="pill"><button id="locb" type="button" aria-label="मेरी लाइव लोकेशन इस्तेमाल करें"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span id="loct"></span></button></div>
+<div class="pill"><button class="round" id="profb" aria-label="प्रोफाइल" aria-haspopup="dialog" aria-expanded="false"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6 8-6s7 1.5 8 6"/></svg></button>
+<div class="menu account-menu" id="profm" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
+<section class="account-panel">
+<header class="account-header"><div><h2 id="accountTitle">आपका खाता</h2><p id="accountUser" hidden></p></div><div class="account-header-actions"><span class="seg account-language" aria-label="भाषा"><a href="en-index.html" lang="en">EN</a><a href="hi-index.html" lang="hi" aria-current="true">हिं</a></span><button type="button" class="account-close" aria-label="खाता मेनू बंद करें">×</button></div></header>
+<nav class="account-links" aria-label="खाता">
+<a id="accountProfile" href="/profile?lang=hi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-6 8-6s7 1.5 8 6"/></svg><span>मेरी प्रोफाइल</span></a>
+<a id="accountOrders" href="/orders?lang=hi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l5 5v13H6z"/><path d="M15 3v6h5M9 13h8M9 17h8"/></svg><span>ऑर्डर</span></a>
+<a class="account-sub" id="accountTrack" href="/track?lang=hi">ऑर्डर ट्रैक करें</a>
+<a id="accountAddresses" href="/profile?lang=hi#address"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>सहेजे गए पते</span></a>
+</nav>
+<div class="account-row"><span>थीम</span><span class="seg" id="themeseg"><button type="button" data-t="light">लाइट</button><button type="button" data-t="dark">डार्क</button></span></div>
+<nav class="account-links account-extra-links" aria-label="खाते के अन्य विकल्प">
+<a id="accountMyOrders" href="/orders?lang=hi"><span aria-hidden="true">🛒</span><span>मेरे ऑर्डर</span></a>
+<a id="accountListings" href="/listings?lang=hi" hidden><span aria-hidden="true">☷</span><span>मेरी लिस्टिंग</span></a>
+</nav>
+<a class="account-login" id="accountLogin" href="/login?lang=hi">लॉग इन / साइन अप</a>
+<button type="button" class="account-logout" id="accountLogout" hidden>लॉग आउट</button>
+</section></div></div>
+</header>
+<main><section id="nearby"><div class="sh"><h2 data-homepage-content="nearbyTitle">मेरे पास की मशीनें</h2></div>
+<div class="distance-filter"><label for="distanceFilter">मेरी लोकेशन से दूरी</label><select id="distanceFilter" aria-label="मेरी लोकेशन से दूरी"><option value="">कोई भी दूरी</option><option value="5">5 किमी के अंदर</option><option value="10">10 किमी के अंदर</option><option value="20">20 किमी के अंदर</option><option value="custom">दूरी चुनें</option></select><label class="custom-distance" for="customDistance" hidden>कस्टम किमी<input id="customDistance" type="number" min="1" max="500" step="1" value="25" inputmode="numeric"></label></div>
+<div class="rail" id="rail"></div>
+<div class="home-more" id="moreMachines" hidden><h2 data-homepage-content="moreMachinesTitle">और मशीनें</h2><div class="product-grid" id="moreMachineGrid"></div></div>
+<button type="button" class="arrow home-more-button" id="nextN" aria-label="और मशीनें दिखाएँ" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14m-7-7 7 7 7-7"/></svg></button></section>
+<section><div class="sh"><h2 data-homepage-content="categoriesTitle">लोकप्रिय श्रेणियाँ</h2><button class="arrow" id="nextC" aria-label="और दिखाएँ"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div><div class="cats" id="catg"></div><div class="dots" id="dots"></div></section>
+<section class="info"><div><h2 style="margin-bottom:8px" data-homepage-content="howTitle">यह कैसे काम करता है</h2>
+<details><summary data-homepage-content="rentQuestion">मशीन किराये पर कैसे लें?</summary><p data-homepage-content="rentAnswer">खोजें या श्रेणी चुनें, मशीन खोलें, तारीख चुनें और मालिक को अनुरोध भेजें।</p></details><details><summary data-homepage-content="listingQuestion">अपनी मशीन किराये पर कैसे दें?</summary><p data-homepage-content="listingAnswer">+ बटन दबाएँ, फोटो, प्रतिदिन का किराया और अपना गाँव जोड़ें। आसपास के किसान उसे देखेंगे।</p></details><details><summary data-homepage-content="paymentQuestion">भुगतान कैसे होता है?</summary><p data-homepage-content="paymentAnswer">मशीन लेते समय मालिक को सीधे भुगतान करें। बुकिंग से पहले किराया तय कर लें।</p></details></div>
+<div class="contact"><h2 data-homepage-content="helpTitle">मदद चाहिए?</h2><p data-homepage-content="helpText">बुकिंग, खाते या अन्य सवालों के लिए हमें कॉल या ईमेल करें।</p><button class="btn" id="homepageContactButton" type="button" aria-controls="homepageContactDetails" aria-expanded="false" data-homepage-content="contactLabel">संपर्क करें</button><div class="contact-details" id="homepageContactDetails" hidden><a class="contact-detail" id="homepagePhoneLink" href="tel:+919608783010">+91 96087 83010</a><a class="contact-detail" id="homepageEmailLink" href="mailto:vishal9608783010@gmail.com">vishal9608783010@gmail.com</a></div></div></section>
+<section class="customer-ratings" aria-labelledby="ratingsTitle">
+<div class="sh"><h2 id="ratingsTitle">खेती क्रांति पर आप क्या कर सकते हैं</h2></div>
+<div class="rating-grid" id="customerRatings" aria-live="polite"><p class="ratings-empty">मार्केटप्लेस की सुविधाएँ लोड हो रही हैं…</p></div>
+</section>
+<section class="customer-reviews" id="customer-reviews" aria-labelledby="reviewsHeading">
+<div class="reviews-layout">
+<div class="reviews-results"><div class="reviews-toolbar" id="reviewsToolbar" aria-label="समीक्षाएँ क्रमबद्ध करें"><h2><span id="reviewsHeading">ग्राहकों की समीक्षाएँ</span> (<span id="reviewsCount" aria-live="polite">0</span>)</h2><p id="reviewsNotice" role="status" hidden></p><label for="reviewsSort" id="sortLabel">समीक्षाएँ क्रमबद्ध करें</label><select id="reviewsSort"><option value="recent">सबसे नई</option><option value="helpful">सबसे उपयोगी</option><option value="highest">सबसे अधिक रेटिंग</option></select><button type="button" class="reviews-write-button" id="openReviewForm" aria-expanded="false" hidden>समीक्षा लिखें</button></div>
+<div class="reviews-list" id="reviewsList" aria-live="polite"><p class="reviews-empty">समीक्षाएँ लोड हो रही हैं…</p></div></div>
+<aside class="review-form-panel" id="reviewFormPanel" aria-labelledby="reviewFormHeading"><div class="review-form-heading"><h3 id="reviewFormHeading">समीक्षा लिखें</h3><button type="button" class="review-close" id="closeReviewForm" aria-label="समीक्षा फ़ॉर्म बंद करें">×</button></div>
+<p class="review-eligibility" id="reviewEligibility"></p><form id="siteReviewForm"><label for="reviewName" id="nameLabel">आपका नाम</label><input id="reviewName" name="name" autocomplete="name" readonly><label id="ratingLabel">आपकी रेटिंग</label><div class="review-star-picker" role="radiogroup" aria-labelledby="ratingLabel"><div class="review-stars-select"><input type="radio" id="reviewRating5" name="rating" value="5" required><label for="reviewRating5" aria-label="5 स्टार">★</label><input type="radio" id="reviewRating4" name="rating" value="4"><label for="reviewRating4" aria-label="4 स्टार">★</label><input type="radio" id="reviewRating3" name="rating" value="3"><label for="reviewRating3" aria-label="3 स्टार">★</label><input type="radio" id="reviewRating2" name="rating" value="2"><label for="reviewRating2" aria-label="2 स्टार">★</label><input type="radio" id="reviewRating1" name="rating" value="1"><label for="reviewRating1" aria-label="1 स्टार">★</label></div><span id="selectedRating" aria-live="polite">0/5</span></div><label for="reviewTitle" id="titleLabel">समीक्षा का शीर्षक</label><input id="reviewTitle" name="title" maxlength="100" minlength="3" required><label for="reviewBody" id="bodyLabel">आपकी समीक्षा</label><textarea id="reviewBody" name="body" maxlength="1200" minlength="10" rows="3" required></textarea><p class="review-form-message" id="reviewFormMessage" role="alert" hidden></p><button class="review-submit" id="submitReview" type="submit">समीक्षा भेजें</button></form></aside>
+</div>
+</section>
+<footer data-homepage-content="footer">खेती क्रांति: किसानों का, किसानों के लिए।</footer>
+<div class="site-footer-legal"><span>© 2026 Kheti Kranti. सर्वाधिकार सुरक्षित।</span><a href="/privacy.html?lang=hi">गोपनीयता नीति</a><a href="/terms.html?lang=hi">नियम</a><a href="/sitemap.html?lang=hi">साइटमैप</a></div></main>
+<nav aria-label="Main">
+<a href="hi-index.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8M5 10v10h14V10"/></svg><span>होम</span></a>
+<a href="hi-bookings.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 11h16"/></svg><span>मेरी बुकिंग</span></a>
+<a class="sell" href="/hi-rent-out.html"><span class="pl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span>किराये पर दें</span></a>
+<a href="hi-equipment.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="7" cy="17" r="3.5"/><circle cx="18" cy="18" r="2.5"/><path d="M7 13.5V8h6l3 5h3v3M13 8V5h-3"/></svg><span>मेरे उपकरण</span></a>
+<a href="hi-about.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.1"/></svg><span>हमारे बारे में</span></a></nav>
+<div id="toast" role="status"></div>
+<script src="app.js"></script>
+<script src="reviews.js"></script>
+</body></html>
